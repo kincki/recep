@@ -1,0 +1,83 @@
+package coap.kafka;
+
+import java.util.*;
+
+import kafka.javaapi.producer.Producer;
+import kafka.producer.KeyedMessage;
+import kafka.producer.ProducerConfig;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+
+import org.eclipse.californium.core.CoapClient;
+import org.eclipse.californium.core.CoapHandler;
+import org.eclipse.californium.core.CoapObserveRelation;
+import org.eclipse.californium.core.CoapResponse;
+import org.eclipse.californium.core.coap.MediaTypeRegistry;
+
+public class CoapKafkaProduce {
+	
+	public static void main(String[] args)
+	{
+		long events = Long.parseLong(args[0]);
+		Random rnd = new Random();
+		CoapIoTClient coapClient = new CoapIoTClient();
+
+		CoapClient client = new CoapClient("coap://[aaaa::c30c:0:0:1]:5683/sensors/temperature");
+		
+		Properties props = new Properties();
+        props.put("metadata.broker.list", "localhost:9092,localhost:9093 ");
+        props.put("serializer.class", "kafka.serializer.StringEncoder");
+        props.put("partitioner.class", "coap.kafka.SimplePartitioner");
+        props.put("request.required.acks", "1");
+ 
+        ProducerConfig config = new ProducerConfig(props);
+		
+		Producer<String, String> producer = new Producer<String, String>(config);
+		
+		CoapObserveRelation relation = client.observe(
+				new CoapHandler() {
+					@Override public void onLoad(CoapResponse response) {
+						String content = response.getResponseText();
+						
+						
+							long runtime = new Date().getTime();
+
+							String ip = "192.168.2." + content;
+							
+							String msg = runtime + ", www.example.com, " + ip;
+							
+							KeyedMessage<String, String> data = new KeyedMessage<String, String>("page-visit", ip, msg);
+							
+							producer.send(data);
+						
+						
+						System.out.println("NOTIFICATION: " + content);
+					}
+					
+					@Override public void onError() {
+						System.err.println("OBSERVING FAILED (press enter to exit)");
+					}
+				});
+		
+		for (long nEvents = 0; nEvents < events; nEvents++)
+		{
+			long runtime = new Date().getTime();
+
+			String ip = "192.168.2." + rnd.nextInt(255);
+			
+			String msg = runtime + ", www.example.com, " + ip;
+			
+			KeyedMessage<String, String> data = new KeyedMessage<String, String>("page-visit", ip, msg);
+			
+			producer.send(data);
+		}
+		
+		producer.close();
+		
+		coapClient.start();
+		 
+	}
+
+}

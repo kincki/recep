@@ -1,0 +1,70 @@
+package coap.kafka;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+
+import org.eclipse.californium.core.CoapClient;
+import org.eclipse.californium.core.CoapHandler;
+import org.eclipse.californium.core.CoapObserveRelation;
+import org.eclipse.californium.core.CoapResponse;
+import org.eclipse.californium.core.coap.MediaTypeRegistry;
+
+import org.eclipse.californium.core.coap.Request;
+import org.eclipse.californium.core.coap.Response;
+
+public class CoapIoTClient {
+	
+	private static String url = "coap://[aaaa::c30c:0:0:2]:5683/sensors/light";
+	
+	public static void main(String[] args) {
+		Request request = Request.newGet();
+		
+		request.setURI(url);
+		request.setObserve();
+	}
+	
+	
+	public static void me(String[] args) {
+			
+		
+		//this example assumes er-rest-example-server is running on contiki/cooja platform
+		CoapClient client = new CoapClient("coap://[aaaa::c30c:0:0:2]:5683/sensors/light");
+		//final CoapKafkaProduce kafka = new CoapKafkaProduce();
+		final ReCEP recep = new ReCEP();
+		
+		// wait for user
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		try { br.readLine(); } catch (IOException e) { System.out.println("FAILED");}
+		
+		// observe
+		
+		System.out.println("OBSERVE (press enter to exit)");
+		
+		CoapObserveRelation relation = client.observe(
+				new CoapHandler() {
+					@Override public void onLoad(CoapResponse response) {
+						String content = response.getResponseText();
+						String delim = "[;]";
+						String[] tokens = content.split(delim);
+						int mote_id = Integer.parseInt(tokens[0]);
+						int val = Integer.parseInt(tokens[1]);
+						recep.send(mote_id, val);
+						System.out.println("NOTIFICATION: " + content);
+						}
+							
+					@Override public void onError() {
+						System.err.println("OBSERVING FAILED (press enter to exit)");
+						}
+					});
+		
+		
+			// wait for user
+				try { br.readLine(); } catch (IOException e) { }
+		
+				System.out.println("CANCELLATION");
+			
+			//relation.proactiveCancel();
+		}
+
+}

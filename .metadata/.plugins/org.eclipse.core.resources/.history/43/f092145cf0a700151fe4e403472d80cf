@@ -1,0 +1,54 @@
+package coap.kafka;
+
+import java.util.*;
+
+import kafka.javaapi.producer.Producer;
+import kafka.producer.KeyedMessage;
+import kafka.producer.ProducerConfig;
+
+// headers for coap client implementation
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+
+import org.eclipse.californium.core.CoapClient;
+import org.eclipse.californium.core.CoapHandler;
+import org.eclipse.californium.core.CoapObserveRelation;
+import org.eclipse.californium.core.CoapResponse;
+import org.eclipse.californium.core.coap.MediaTypeRegistry;
+
+
+public class CoapKafkaProduce {
+	
+	public static void main(String[] args)
+	{
+		long events = Long.parseLong(args[0]);
+		Random rnd = new Random();
+
+		Properties props = new Properties();
+        props.put("metadata.broker.list", "localhost:9092,localhost:9093 ");
+        props.put("serializer.class", "kafka.serializer.StringEncoder");
+        props.put("partitioner.class", "coap.kafka.SimplePartitioner");
+        props.put("request.required.acks", "1");
+ 
+        ProducerConfig config = new ProducerConfig(props);
+		
+		Producer<String, String> producer = new Producer<String, String>(config);
+		
+		for (long nEvents = 0; nEvents < events; nEvents++)
+		{
+			long runtime = new Date().getTime();
+
+			String ip = "192.168.2." + rnd.nextInt(255);
+			
+			String msg = runtime + ", www.example.com, " + ip;
+			
+			KeyedMessage<String, String> data = new KeyedMessage<String, String>("page-visit", ip, msg);
+			
+			producer.send(data);
+		}
+		
+		producer.close();
+	}
+
+}

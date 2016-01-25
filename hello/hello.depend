@@ -1,0 +1,5 @@
+# depslib dependency file v1.0
+1447596309 source:/home/koray/workspace/hello/main.c
+	<stdio.h>
+	<stdlib.h>
+
