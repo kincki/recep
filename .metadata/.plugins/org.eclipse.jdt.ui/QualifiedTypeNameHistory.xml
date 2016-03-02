@@ -1,2 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<qualifiedTypeNameHistroy/>
+<qualifiedTypeNameHistroy>
+<fullyQualifiedTypeName name="org.eclipse.californium.core.coap.Response"/>
+<fullyQualifiedTypeName name="org.eclipse.californium.core.coap.Request"/>
+<fullyQualifiedTypeName name="coap.kafka.CoapIoTClient"/>
+</qualifiedTypeNameHistroy>
