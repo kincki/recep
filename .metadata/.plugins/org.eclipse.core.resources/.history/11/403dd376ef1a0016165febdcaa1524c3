@@ -46,7 +46,8 @@ public class ReCEP {
             eventCounter++;
             System.out.println("ReCEP>> # of Events Received is " + eventCounter + "\n");
             
-            System.out.println("\n RECEP>> ne string be " + "\n");
+            for (int i = 0; newData.length(); i++ )
+            	System.out.println(newData[i]);
             
         	System.out.println("ReCEP>> Event received: " + newData[0].getUnderlying());
             
@@ -71,7 +72,7 @@ public class ReCEP {
         cepAdm.createEPL("insert into OrderedTokensWin select moteId, eventTime, timeStamp from TokenEvent order by eventTime");
         
         EPStatement cepStatement = cepAdm.createEPL("select a.moteId as aId, b.moteId as bId "
-        		+ "from pattern [every a=OrderedTokensWin -> b=OrderedTokensWin] where ((b.moteId - a.moteId) != 1) ");
+        		+ "from pattern [every a=OrderedTokensWin -> b=OrderedTokensWin] where (b.moteId - a.moteId) != 1) ");
         
         
         cepStatement.addListener(new CEPListener());

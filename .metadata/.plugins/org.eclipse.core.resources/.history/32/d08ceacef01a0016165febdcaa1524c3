@@ -46,7 +46,9 @@ public class ReCEP {
             eventCounter++;
             System.out.println("ReCEP>> # of Events Received is " + eventCounter + "\n");
             
-            System.out.println("\n RECEP>> ne string be " + "\n");
+            String string = new String();
+            newData[0].get(string); 
+            System.out.println("\n ne string be " + "\n");
             
         	System.out.println("ReCEP>> Event received: " + newData[0].getUnderlying());
             

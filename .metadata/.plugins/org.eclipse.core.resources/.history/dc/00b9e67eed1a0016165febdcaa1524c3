@@ -8,7 +8,7 @@ public class RV4IoT {
 			"coap://[aaaa::c30c:0:0:3]:5683/test/event",
 			"coap://[aaaa::c30c:0:0:4]:5683/test/event",
 			"coap://[aaaa::c30c:0:0:5]:5683/test/event"*/
-			"coap://[aaaa::c30c:0:0:6]:5683/test/event"
+			"coap://[aaaa::c30c:0:0:12]:5683/test/event"
 	};
 	
 	public static void main(String[] args) {
