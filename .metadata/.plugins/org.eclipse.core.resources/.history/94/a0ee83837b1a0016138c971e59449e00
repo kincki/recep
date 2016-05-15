@@ -1,0 +1,104 @@
+/**
+ * 
+ */
+package jCoapParser;
+
+import net.sourceforge.jpcap.net.RawPacket;
+import java.nio.ByteBuffer;
+import java.net.InetAddress;
+
+/**
+ * @author root
+ *
+ */
+public class IPv6Packet {
+	
+	final int RAW_FRAME_HEADER_LENGTH = 16; /* this much data will be discarded */
+	final int PAYLOAD_LENGTH_INDEX = 4;
+	final int NEXT_HEADER_INDEX = 6;
+	final int HOP_LIMIT_INDEX = 7;
+	final int SOURCE_IP_INDEX = 8;
+	final int DEST_IP_INDEX = 24;
+	final int PAYLOAD_INDEX = 40;
+	
+	
+	byte[] rawData; //original raw packet arrived
+	byte[] macData; //mac layer data, not used for now
+	short payloadLength; // length of the IPv6 Payload
+	byte nextHdr; // what is the protocol in payload
+	byte hopLimit; // what is the hop limit for this packet
+	private byte [] source; // 16byte long source IPv6 address
+	byte [] dest; // 16byte long source IPv6 address
+	long timeOfArrival; // time of arrival for this packet
+	
+	UDPacket payload; //the whole UDP packet
+	
+	/*
+	 * Parse incoming RawPacket into this IPv6 packet format
+	 * 
+	 */
+	public IPv6Packet(RawPacket packet) {
+		this.rawData = packet.getData();
+		
+	}
+	
+	public void parseRawData() {
+		
+		//This wrapper is used over and over again to retrieve packet details
+		ByteBuffer wrapper = ByteBuffer.wrap(rawData); 
+		
+		this.timeOfArrival = System.currentTimeMillis();
+		
+		try {
+			//strip-off mac data
+			this.macData = new byte[RAW_FRAME_HEADER_LENGTH]; //this much of data will be stripped of from the front
+			wrapper.get(this.macData, 0, RAW_FRAME_HEADER_LENGTH);
+			//payload_length is represented with two (2) bytes
+			//wrapper = ByteBuffer.wrap(rawData, RAW_FRAME_HEADER + PACKET_SPECIFIC_DATA_LOC, 2 );
+			this.payloadLength = wrapper.getShort(PAYLOAD_LENGTH_INDEX); 
+			System.out.println("payload length: " + this.payloadLength);
+			
+			//next header is represented with one (1) byte
+			//add 2 to the beginning offset to account for 2 bytes of payload field 
+			//wrapper = ByteBuffer.wrap(rawData, RAW_FRAME_HEADER + PACKET_SPECIFIC_DATA_LOC + 2, 2);
+			this.nextHdr = wrapper.get();
+			System.out.println(", nextHdr: " + this.nextHdr);
+			
+			//hop limit is represented with one (1) byte 
+			//add 2 for payload, 1 for next header fields 
+			this.hopLimit = wrapper.get();
+			System.out.println(", hop: " + this.hopLimit);
+			
+			//source address is 16 bytes
+			//add 2 for payload, 1 for next header, 1 for hop limit fields
+			wrapper.get(this.getSourceIPAddress(), 0, 16);
+			
+			//destination address is 16 bytes
+			//add 2 for payload, 1 for next header, 1 for hop limit, 16 for source address fields
+			wrapper.get(this.dest, RAW_FRAME_HEADER + PACKET_SPECIFIC_DATA_LOC + 2 + 1 + 1 + 16, 16);
+			
+			//UDP payload is payloadLength length
+			//add eight (8) to account for UDP header length
+			byte[] udpPayload = new byte[this.payloadLength + 8];
+			wrapper.get(udpPayload, RAW_FRAME_HEADER + PACKET_SPECIFIC_DATA_LOC + 2 + 1 + 1 + 16 + 16, udpPayload.length);
+			this.payload = new UDPacket(udpPayload);
+			
+			//If the UDP packet is parsed correctly, then we can setup coap parser for this source IP
+			this.payload.coapPacket.setRawData(InetAddress.getByAddress(this.getSourceIPAddress().toString(), this.getSourceIPAddress()), this.payload.getSourcePort());
+			
+			this.payload.coapPacket.parseMessage();
+		
+		} catch (Exception e) {
+			System.out.println("IPv6.parse.error\n");
+			System.out.println(e.toString());
+			e.printStackTrace();
+		}		
+		
+	}
+	public byte [] getSourceIPAddress() {
+		return source;
+	}
+	public void setSourceIPAddress(byte [] source) {
+		this.source = source;
+	}
+}

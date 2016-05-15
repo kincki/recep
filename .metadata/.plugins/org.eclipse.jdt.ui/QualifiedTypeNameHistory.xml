@@ -3,4 +3,7 @@
 <fullyQualifiedTypeName name="org.eclipse.californium.core.coap.Response"/>
 <fullyQualifiedTypeName name="org.eclipse.californium.core.coap.Request"/>
 <fullyQualifiedTypeName name="coap.kafka.CoapIoTClient"/>
+<fullyQualifiedTypeName name="net.sourceforge.jpcap.capture.RawPacketListener"/>
+<fullyQualifiedTypeName name="java.lang.System"/>
+<fullyQualifiedTypeName name="net.sourceforge.jpcap.util.AsciiHelper"/>
 </qualifiedTypeNameHistroy>

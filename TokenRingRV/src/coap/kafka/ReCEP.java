@@ -54,18 +54,7 @@ public class ReCEP {
         cepRT = cep.getEPRuntime();
         
         EPAdministrator cepAdm = cep.getEPAdministrator();
-        //--------version-1-----------//
-        /*EPStatement cepStatement = cepAdm.createEPL(
-        		"select * from TokenEvent match_recognize ( " + 
-        		" partition by moteId " +
-        		" measures A.moteId as a_id, B.moteId as b_id " + 
-        		" pattern (A B) " +  
-        		" define " + 
-        		" A as A.eventTime < B.eventTime, " +
-        		" B as (B.moteId - A.moteId) != 1 )"
-        		"select moteId eventTime from TokenEvent.win:length(2) having (moteId - prev(1, moteId)) != 1 & eventTime > prev(1, eventTime)"
-        		);
- */
+        
         //---------version-2----------//
         cepAdm.createEPL("create window OrderedTokensWin.win:keepall() "
         		+ "as select moteId, eventTime, timeStamp from TokenEvent");
@@ -77,14 +66,6 @@ public class ReCEP {
         		+ "from pattern [every a=OrderedTokensWin -> b=OrderedTokensWin] where (b.moteId - a.moteId) != 1");
         
         
-      //---------version-3----------//
-       /* cepAdm.createEPL("create schema OrderedTokens () copyfrom TokenEvent");
-        
-        cepAdm.createEPL("on TokenEvent insert into OrderedTokens select * order by eventTime");
-        
-        EPStatement cepStatement = cepAdm.createEPL("select a.moteId as aId, b.moteId as bId "
-        		+ "from pattern [every a=OrderedTokens -> b=OrderedTokens] where (b.moteId - a.moteId) != 1");
-        */
         cepStatement.addListener(new CEPListener());
  
     }

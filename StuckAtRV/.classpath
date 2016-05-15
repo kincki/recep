@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.7"/>
+	<classpathentry kind="lib" path="/home/koray/Projects/recep/esper-5.3.0/esper/lib/antlr-runtime-4.1.jar"/>
+	<classpathentry kind="lib" path="/home/koray/Projects/recep/esper-5.3.0/esper/lib/cglib-nodep-3.1.jar"/>
+	<classpathentry kind="lib" path="/home/koray/Projects/recep/esper-5.3.0/esper/lib/commons-logging-1.1.3.jar"/>
+	<classpathentry kind="lib" path="/home/koray/Projects/recep/esper-5.3.0/esper/lib/log4j-1.2.17.jar"/>
+	<classpathentry kind="lib" path="/home/koray/Projects/recep/californium/californium.core/californium-core/target/californium-core-1.1.0-SNAPSHOT.jar"/>
+	<classpathentry kind="lib" path="/home/koray/Projects/recep/californium/californium.element-connector/target/element-connector-1.1.0-SNAPSHOT.jar"/>
+	<classpathentry kind="lib" path="/home/koray/Projects/recep/kafka_2.11-0.9.0.0/libs/kafka_2.11-0.9.0.0.jar"/>
+	<classpathentry kind="lib" path="/home/koray/Projects/recep/kafka_2.11-0.9.0.0/libs/kafka-clients-0.9.0.0.jar"/>
+	<classpathentry kind="lib" path="/home/koray/Projects/recep/kafka_2.11-0.9.0.0/libs/kafka-log4j-appender-0.9.0.0.jar"/>
+	<classpathentry kind="lib" path="/home/koray/Projects/recep/kafka_2.11-0.9.0.0/libs/kafka-tools-0.9.0.0.jar"/>
+	<classpathentry kind="lib" path="/home/koray/Projects/recep/kafka_2.11-0.9.0.0/libs/metrics-core-2.2.0.jar"/>
+	<classpathentry kind="lib" path="/home/koray/Projects/recep/kafka_2.11-0.9.0.0/libs/scala-library-2.11.7.jar"/>
+	<classpathentry kind="lib" path="/home/koray/Projects/recep/kafka_2.11-0.9.0.0/libs/slf4j-api-1.7.6.jar"/>
+	<classpathentry kind="lib" path="/home/koray/Projects/recep/esper-5.3.0/esper-5.3.0.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

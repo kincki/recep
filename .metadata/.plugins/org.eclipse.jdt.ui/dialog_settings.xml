@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <section name="Workbench">
-	<item value="/home/koray/Projects/recep/esper-5.3.0/esper/lib" key="org.eclipse.jdt.ui.lastextjar"/>
+	<item value="/home/koray/Projects/recep/sniffer/jpcap/jars" key="org.eclipse.jdt.ui.lastextjar"/>
+	<item value="JavaSE-1.7" key="org.eclipse.jdt.ui.last.selected.execution.enviroment"/>
 	<section name="OptionalMessageDialog.hide.">
 		<item value="true" key="org.eclipse.jdt.ui.typecomment.deprecated"/>
 	</section>

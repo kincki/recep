@@ -1,0 +1,79 @@
+/**
+ * 
+ */
+package jCoapParser;
+
+import net.sourceforge.jpcap.net.RawPacket;
+import java.nio.ByteBuffer;
+
+/**
+ * @author root
+ *
+ */
+public class IPv6Packet {
+	short payloadLength; // length of the IPv6 Payload
+	byte nextHdr; // what is the protocol in payload
+	byte hopLimit; // what is the hop limit for this packet
+	byte [] source; // 16byte long source IPv6 address
+	byte [] dest; // 16byte long source IPv6 address
+	long timeOfArrival; // time of arrival for this packet
+	
+	UDPacket payload; //the whole UDP packet
+	
+	final int RAW_FRAME_HEADER = 16; /* this much data will be discarded */
+	final int PACKET_SPECIFIC_DATA_LOC = 5; /* this is where packet s
+	
+	/*
+	 * Parse incoming RawPacket into this IPv6 packet format
+	 * 
+	 */
+	
+	public void parseIPv6Packet(RawPacket packet) {
+		
+		//retrive the raw data from packet in bytes
+		byte[] rawData = packet.getData();
+		
+		//This wrapper is used over and over again to retrieve packet details
+		ByteBuffer wrapper = ByteBuffer.wrap(rawData); 
+		
+		this.timeOfArrival = System.currentTimeMillis();
+		
+		try {
+			//payload is represented with two (2) bytes
+			//wrapper = ByteBuffer.wrap(rawData, RAW_FRAME_HEADER + PACKET_SPECIFIC_DATA_LOC, 2 );
+			this.payloadLength = wrapper.getShort(RAW_FRAME_HEADER + PACKET_SPECIFIC_DATA_LOC); 
+			
+			//nextheader is represented with one (1) byte
+			//add 2 to the beginning offset to account for 2 bytes of payload field 
+			//wrapper = ByteBuffer.wrap(rawData, RAW_FRAME_HEADER + PACKET_SPECIFIC_DATA_LOC + 2, 2);
+			this.nextHdr = wrapper.get(RAW_FRAME_HEADER + PACKET_SPECIFIC_DATA_LOC + 2);
+			
+			//hoplimit is represented with one (1) byte 
+			//add 2 for payload, 1 for nextheader fields 
+			this.hopLimit = wrapper.get(RAW_FRAME_HEADER + PACKET_SPECIFIC_DATA_LOC + 2 + 1);
+			
+			//source address is 16 bytes
+			//add 2 for payload, 1 for nextheader, 1 for hoplimit fields
+			wrapper.get(this.source, RAW_FRAME_HEADER + PACKET_SPECIFIC_DATA_LOC + 2 + 1 + 1, 16);
+			
+			//destination address is 16 bytes
+			//add 2 for payload, 1 for nextheader, 1 for hoplimit, 16 for source address fields
+			wrapper.get(this.dest, RAW_FRAME_HEADER + PACKET_SPECIFIC_DATA_LOC + 2 + 1 + 1 + 16, 16);
+			
+			//UDP payload is payloadLength length
+			//add eight (8) to account for UDP header length
+			byte[] udpPayload = new byte[this.payloadLength + 8];
+			wrapper.get(udpPayload, RAW_FRAME_HEADER + PACKET_SPECIFIC_DATA_LOC + 2 + 1 + 1 + 16 + 16, udpPayload.length);
+			this.payload = new UDPacket(udpPayload);
+		
+		} catch (Exception e) {
+			System.out.println(e.toString() + "at line " + e.getLocalizedMessage());
+		}		
+		
+	}
+	
+	IPv6Packet() {
+		System.out.println("IPv6Packet created");
+	}
+	
+}
