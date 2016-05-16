@@ -38,29 +38,21 @@ public class ReCEP {
         System.out.println("ReCEP>> Sending event token_" + id + ".");
     	TokenEvent te = new TokenEvent(id, timeStamp, eventTime);
     	cepRT.sendEvent(te);
-    	
-    	System.out.println("ReCEP>> # of Events Received is " + ++eventCounter);
+    	eventCounter++;
+    	System.out.println("ReCEP>> # of Events Received is " + eventCounter + "\n");
  
     }
  
     public static class CEPListener implements UpdateListener {
  
         public void update(EventBean[] newData, EventBean[] oldData) {
-                    
-        	int aId = Integer.parseInt(newData[0].get("aId").toString());
-        	int bId = Integer.parseInt(newData[0].get("bId").toString());
-
+            violationCounter++;
+            System.out.println("ReCEP>> # of Violations Detected is " + violationCounter + "\n");
+            
+            System.out.println("\n RECEP>> ne string be " + "\n");
+            
         	System.out.println("ReCEP>> Event received: " + newData[0].getUnderlying());
-
-        	if (!(aId == 5 && bId == 1))
-        		System.out.println("ReCEP>> # of Violations Detected is " + ++violationCounter + "\n");
-        	else {
-        		System.out.println("ReCEP>> aID: " + aId);
-            	System.out.println("ReCEP>> bID: " + bId);
-            	System.out.println("ReCEP>> This is not a violation!!!~~!!!");
-        	}
-                        
-   
+            
         }
     }
  

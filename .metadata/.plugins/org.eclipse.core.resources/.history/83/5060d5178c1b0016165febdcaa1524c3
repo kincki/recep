@@ -38,8 +38,8 @@ public class ReCEP {
         System.out.println("ReCEP>> Sending event token_" + id + ".");
     	TokenEvent te = new TokenEvent(id, timeStamp, eventTime);
     	cepRT.sendEvent(te);
-    	
-    	System.out.println("ReCEP>> # of Events Received is " + ++eventCounter);
+    	eventCounter++;
+    	System.out.println("ReCEP>> # of Events Received is " + eventCounter + "\n");
  
     }
  
