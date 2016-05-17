@@ -43,9 +43,10 @@ public class CoapIoTClient implements Runnable {
 					String[] tokens = res[res.length-1].split(delim);
 					
 					if ( (null != tokens) & (tokens.length > 1) ) {
-						int mote_id = Integer.parseInt(tokens[1]);
-						long timestamp = Long.parseLong(tokens[2]);
-						recep.send(mote_id, timestamp);
+						int evId = Integer.parseInt(tokens[1]);
+						int mote_id = Integer.parseInt(tokens[2]);
+						long timestamp = Long.parseLong(tokens[3]);
+						recep.send(evId, mote_id, timestamp);
 					}
 					
 				} //if (null...)
