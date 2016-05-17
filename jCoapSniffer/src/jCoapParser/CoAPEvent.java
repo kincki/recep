@@ -20,5 +20,15 @@ package jCoapParser;
  *
  */
 public interface CoAPEvent {
-
+	public enum EventType {EMPTY, RESPONSE, REQUEST}
+	/*
+	EventType type;
+	short eventId;
+	byte[] sourceIP;
+	byte[] sourcePort;
+	byte[] destIP;
+	byte[] destPort;
+	short msgId;
+	byte[] payload;
+	long eventTime;*/
 }

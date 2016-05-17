@@ -55,16 +55,13 @@ public class IPv6Packet {
 			
 			//payload_length is represented with two (2) bytes
 			this.payloadLength = wrapper.getShort(); 
-			System.out.println("\npayload length: " + this.payloadLength);
 			
 			//next header is represented with one (1) byte
 			//add 2 to the beginning offset to account for 2 bytes of payload field 
 			this.nextHdr = wrapper.get();
-			System.out.println(", nextHdr: " + this.nextHdr);
 			
 			//hop limit is represented with one (1) byte 
 			this.hopLimit = wrapper.get();
-			System.out.println(", hop: " + this.hopLimit);
 			
 			//source address is 16 bytes
 			this.sourceIP = new byte[IP6_ADDR_LENGTH];
@@ -81,8 +78,22 @@ public class IPv6Packet {
 			
 			//If the UDP packet is parsed correctly, then we can setup coap parser for this source IP
 			if (this.payload.isCoap()) {
-				this.payload.getCoapPacket().setRawData(InetAddress.getByAddress(this.getSourceIPAddress().toString(), this.getSourceIPAddress()), this.payload.getSourcePort());
+				
+				if (this.payload.getCOAP_PORT() == this.payload.getSourcePort())
+					this.payload.getCoapPacket().setRawData(InetAddress.getByAddress(this.getSourceIPAddress().toString(), this.getSourceIPAddress()), this.payload.getSourcePort());
+				else
+					this.payload.getCoapPacket().setRawData(InetAddress.getByAddress(this.getDestIPAddress().toString(), this.getDestIPAddress()), this.payload.getDestPort());
+				
 				this.payload.getCoapPacket().parseMessage();
+				
+				if (this.payload.getCoapPacket().isEmptyMessage())
+					System.out.println("Empty Message");
+				else if (this.payload.getCoapPacket().isRequest())
+					System.out.println("Request: " + this.payload.getCoapPacket().getRequest().getPayloadString());
+				else if (this.payload.getCoapPacket().isResponse())
+					System.out.println("Response: " + this.payload.getCoapPacket().getResponse().getPayloadString());
+				else
+					System.out.println("Bu NE MESAJI BOYLE?");
 			}
 		
 		} catch (Exception e) {
@@ -90,10 +101,17 @@ public class IPv6Packet {
 		}		
 		
 	}
+	
 	public final byte [] getSourceIPAddress() {
 		return sourceIP;
 	}
+	
 	public void setSourceIPAddress(byte [] source) {
 		this.sourceIP = source;
 	}
+	
+	public final byte [] getDestIPAddress () {
+		return destIP;
+	}
+	
 }

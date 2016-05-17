@@ -16,8 +16,8 @@ public class UDPacket {
 	private final short UDP_HDR_LENGTH = 8;
 	private final short COAP_PORT = 5683;
 	
-	private short sourcePort; //sender's port address
-	private short destPort; //receiver's port address
+	private int sourcePort; //sender's port address
+	private int  destPort; //receiver's port address
 	private short length; //length of the payload.
 	private short checkSum; //message checksum
 	private CoapPacket coapPacket;
@@ -28,7 +28,7 @@ public class UDPacket {
 	 * Retrieves destination port number
 	 * @return the destPort
 	 */
-	public final short getDestPort() {
+	public final int getDestPort() {
 		return destPort;
 	}
 
@@ -76,9 +76,10 @@ public class UDPacket {
 		
 		//get source port
 		this.setSourcePort(wrapper.getShort());
-		
+		System.out.println("UDP.sourcePort: " + getSourcePort());
 		//get destination port
 		this.destPort = wrapper.getShort();
+		System.out.println("UDP.destPort: " + getDestPort());
 		
 		setCoap((COAP_PORT == this.destPort) | (COAP_PORT == this.sourcePort));
 		
@@ -96,7 +97,7 @@ public class UDPacket {
 		coapPacket = new CoapPacket(coapPayload);		
 	}
 
-	public short getSourcePort() {
+	public int getSourcePort() {
 		return sourcePort;
 	}
 

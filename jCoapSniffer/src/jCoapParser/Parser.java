@@ -76,8 +76,7 @@ class RawPacketHandler implements RawPacketListener
     
     
     //System.out.println("Packet " + m_counter + "\n" + AsciiHelper.toText(data.getData()) + "\n" + "length: " + data.toString().length() + "\n");
-    System.out.println("Packet " + m_counter + "\n" + data + "\n" + "length: " + data.toString().length() + "\n");
-    
+    //System.out.println("Packet " + m_counter + "\n" + data + "\n" + "length: " + data.toString().length() + "\n");    
     
   }
 }

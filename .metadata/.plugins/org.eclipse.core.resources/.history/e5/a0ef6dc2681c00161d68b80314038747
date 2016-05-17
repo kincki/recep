@@ -1,0 +1,109 @@
+/**
+ * 
+ */
+package jCoapParser;
+
+import java.nio.ByteBuffer;
+
+//import sun.invoke.anon.ConstantPoolPatch;
+
+/**
+ * @author root
+ *
+ */
+public class UDPacket {
+
+	private final short UDP_HDR_LENGTH = 8;
+	private final short COAP_PORT = 5683;
+	
+	private short sourcePort; //sender's port address
+	private short destPort; //receiver's port address
+	private short length; //length of the payload.
+	private short checkSum; //message checksum
+	private CoapPacket coapPacket;
+	private boolean isCoap; 
+
+	
+	/**
+	 * Retrieves destination port number
+	 * @return the destPort
+	 */
+	public final short getDestPort() {
+		return destPort;
+	}
+
+	/**
+	 * Retrieves UDP packet length
+	 * @return the length
+	 */
+	public final short getLength() {
+		return length;
+	}
+
+	/**
+	 * Retrieves the Coap Packet inside UDP payload
+	 * @return the coapPacket
+	 */
+	public final CoapPacket getCoapPacket() {
+		return coapPacket;
+	}
+
+	/**
+	 * Retrieve the System CoAP port number
+	 * @return the cOAP_PORT
+	 */
+	public final short getCOAP_PORT() {
+		return COAP_PORT;
+	}
+	
+	/**
+	 * @return the isCoap
+	 */
+	public final boolean isCoap() {
+		return isCoap;
+	}
+
+	/**
+	 * @param isCoap the isCoap to set
+	 */
+	public void setCoap(boolean isCoap) {
+		this.isCoap = isCoap;
+	}
+	
+	public UDPacket(byte[] udpPayload) {
+		// TODO Auto-generated constructor stub
+		ByteBuffer wrapper = ByteBuffer.wrap(udpPayload);
+		
+		System.out.println("UDP: " + udpPayload.toString());
+		//get source port
+		this.setSourcePort(wrapper.getShort());
+		System.out.println("UDP.sourcePort: " + getSourcePort());
+		//get destination port
+		this.destPort = wrapper.getShort();
+		System.out.println("UDP.destPort: " + getDestPort());
+		
+		setCoap((COAP_PORT == this.destPort) | (COAP_PORT == this.sourcePort));
+		
+		//get length of payload
+		this.length = wrapper.getShort();
+		
+		//get checksum
+		this.checkSum = wrapper.getShort();
+		
+		//strip coap payload
+		//assume that UDP payload is CoAP packet
+		//UDP length includes UDP header length, so substract it
+		byte[] coapPayload = new byte[length - UDP_HDR_LENGTH];
+		wrapper.get(coapPayload);
+		coapPacket = new CoapPacket(coapPayload);		
+	}
+
+	public short getSourcePort() {
+		return sourcePort;
+	}
+
+	public void setSourcePort(short sourcePort) {
+		this.sourcePort = sourcePort;
+	}
+
+}

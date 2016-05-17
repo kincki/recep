@@ -1,0 +1,24 @@
+package jCoapParser;
+
+/**
+ * This class represents basic events occurring in an IoT domain.
+ * Basic events can be of type Response, Request or EmptyMessage
+ * 
+ * CoAP protocol is layered amongst Request or Response layers.
+ * 
+ * Each message can be of type either GET, PUT, PUSH or DELETE.
+ * A GET message can also be adjusted to OBSERVE any modification
+ * in the service status.
+ * 
+ * This interface is designed to establish a framework that represents
+ * basic CoAP events.
+ * 
+ * Any project that deals with generating events related to CoAP communication
+ * must implement this interface and generate project specific events.
+ *  
+ * @author Koray INCKI
+ *
+ */
+public interface CoAPEvent {
+	enum EventType = {EMPTY, RESPONSE, REQUEST};
+}
